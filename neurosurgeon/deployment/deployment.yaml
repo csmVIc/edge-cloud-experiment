@@ -1,0 +1,28 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: edge-test
+  labels:
+    app: edge-test
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: edge-test
+    image: neurosurgeon-edge:v1.0
+    env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
+    args: ["/bin/bash","-c","python3 edge_api.py --partition 10"]
+    codePath: usr/Demoac/.edge/neurosurgeon/
+    ports:                       
+    - containerPort: 98     
+      protocol: TCP 
+  - name: cloud-test
+    image: neurosurgeon-cloud:v1.0
+    env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
+    args: ["/bin/bash","-c","python3 cloud_api.py -i 0.0.0.0 -p 99"]
+    ports:
+    - containerPort: 99
+      protocol: TCP
