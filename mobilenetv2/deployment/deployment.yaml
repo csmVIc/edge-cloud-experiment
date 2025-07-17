@@ -1,0 +1,35 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: edge-test
+  labels:
+    app: edge-test
+spec:
+  restartPolicy: OnFailure
+  containers:
+  - name: edge-test
+    image: mobilenetv2-edge:v1.0
+    resources:
+      limits:
+        cpu: "0.6"
+      requests:
+        cpu: "0.6"
+    env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
+    args: ["/bin/bash","-c","python edge_inference.py"]
+    codePath: usr/symteacher/.edge/mobilenetv2/
+    ports:                       
+    - containerPort: 98     
+      protocol: TCP 
+    securityContext:
+      privileged: true
+  - name: cloud-test
+    image: mobilenetv2-cloud:v1.0
+    env:
+    - name: PYTHONUNBUFFERED
+      value: "1"
+    args: ["/bin/bash","-c","python cloud_inference.py -i 0.0.0.0 -p 99"]
+    ports:
+    - containerPort: 99
+      protocol: TCP

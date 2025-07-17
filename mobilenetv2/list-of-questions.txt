@@ -1,0 +1,2 @@
+1. edge-test加载模型：agilenn-model
+2. cloud-test加载模型：agilen
