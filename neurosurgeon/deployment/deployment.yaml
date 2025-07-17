@@ -9,10 +9,15 @@ spec:
   containers:
   - name: edge-test
     image: neurosurgeon-edge:v1.0
+    resources:
+      limits:
+        cpu: "0.6"
+      requests:
+        cpu: "0.6"
     env:
     - name: PYTHONUNBUFFERED
       value: "1"
-    args: ["/bin/bash","-c","python3 edge_api.py --partition 10"]
+    args: ["/bin/bash","-c","tc qdisc add dev eth0 root tbf rate 5mbit burst 12kbit latency 400ms; python edge_inference.py -t alex_net -d cpu --partition 13"]
     codePath: usr/Demoac/.edge/neurosurgeon/
     ports:                       
     - containerPort: 98     
@@ -22,7 +27,7 @@ spec:
     env:
     - name: PYTHONUNBUFFERED
       value: "1"
-    args: ["/bin/bash","-c","python3 cloud_api.py -i 0.0.0.0 -p 99"]
+    args: ["/bin/bash","-c","python3 cloud_inference.py -i 0.0.0.0 -p 99 "]
     ports:
     - containerPort: 99
       protocol: TCP
